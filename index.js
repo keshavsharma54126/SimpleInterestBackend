@@ -1,32 +1,19 @@
-#define _WINSOCK_DEPRECATED_NO_WARNINGS 
-#pragma comment(lib,"ws2_32.lib")
-#include<iostream>
-#include<WinSock2.h>
+const express = require("express");
 
-using namespace std;
+const app = express();
 
-int main(){
+app.use(express.json());
 
-    std::cout<<"Attempting to create a server";
-    SOCKET wsocket ;
-    SOCKET new_wsocket;
-    WSADATA wsaData;
-    struct sockaddr_in server;
-    int server_let;
-    int BUFFER_SIZE = 37020;
-    
-    //initialise the winsoc api call
-    if(WSAStartup(MAKEWORD(2,2),&wsaData)!=0){
-        std::cout<<"could not initialise winsoc api"<<endl;
-    }
+app.get("/", (req, res) => {
+  let principal = parseFloat(req.query.principal);
+  let rate = parseFloat(req.query.rate);
+  let time = parseFloat(req.query.time);
+  let interest = (principal * rate * time) / 100;
+  let totalsum = principal + interest;
+  res.json({
+    totalsum: totalsum,
+    interest: interest,
+  });
+});
 
-    //create a socket
-    wsocket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
-    if(wsocket == INVALID_SOCKET){
-        cout<<"could not create socket"<<endl;
-    }
-
-
-
-    return 0;
-}
+app.listen(3000);
